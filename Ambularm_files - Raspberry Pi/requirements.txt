@@ -1,0 +1,9 @@
+numpy==1.19.5
+PyBluez==0.23
+sounddevice==0.4.6
+tflite-runtime==2.11.0
+
+# additional packages for Raspberry
+# libbluetooth-dev (sudo apt-get install libbluetooth-dev)
+# portaudio19-dev (sudo apt-get install portaudio19-dev)
+# Enabling ssh when installing Raspberry OS
