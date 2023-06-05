@@ -39,7 +39,7 @@ def main():
             reset = False
             continue
 
-        # Important scores for siren detection:316, 318, 390, 391, 382
+        # Prints the 'Emergency Vehicle' score. (Other possible scores for siren detection:316, 318, 390, 391, 382)
         classifier.print_class_score(scores, [316])
 
 if __name__ == '__main__':
