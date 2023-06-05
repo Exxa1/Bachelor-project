@@ -3,12 +3,13 @@ import numpy as np
 import csv
 import sounddevice as sd
 
+# This class is a wrapper around the sound classification model.
 class SoundClassifier:
     def __init__(self, model_path, class_map_csv_path, duration=1, sample_rate=16000):
         self.duration = duration
         self.sample_rate = sample_rate
-        self.interpreter = tflite.Interpreter(model_path)
-        self.class_names = self.class_names_from_csv(class_map_csv_path)
+        self.interpreter = tflite.Interpreter(model_path) # Load the tflite model
+        self.class_names = self.class_names_from_csv(class_map_csv_path) # Read class names from the CSV file
         self.input_details = self.interpreter.get_input_details()
         self.waveform_input_index = self.input_details[0]['index']
         self.output_details = self.interpreter.get_output_details()
@@ -28,6 +29,7 @@ class SoundClassifier:
         return class_names
 
     def record_sound(self):
+        """records a sound with the duration given in the constructor and returns it as a numpy array."""
         recording = sd.rec(int(self.duration * self.sample_rate), 
                            samplerate=self.sample_rate, channels=1, dtype=np.float32)
         sd.wait()  # Wait until recording is finished
@@ -35,17 +37,19 @@ class SoundClassifier:
         return waveform
 
     def classify_sound(self, waveform):
+        """Takes a waveform and returns its classification scores, embeddings, and spectrogram."""
         self.interpreter.resize_tensor_input(self.waveform_input_index, [len(waveform)], strict=True)
         self.interpreter.allocate_tensors()
         self.interpreter.set_tensor(self.waveform_input_index, waveform)
         self.interpreter.invoke()
         scores, embeddings, spectrogram = (
             self.interpreter.get_tensor(self.scores_output_index),
-            self.interpreter.get_tensor(self.embeddings_output_index), # maybe unnecessary
+            self.interpreter.get_tensor(self.embeddings_output_index),
             self.interpreter.get_tensor(self.spectrogram_output_index))
         return scores, embeddings, spectrogram
 
     def print_class_score(self, scores, class_indexes):
+        """Prints the mean score of passed classes, and the name of the class."""
         for index in class_indexes:
             print(f'The score of {self.class_names[index]} is: {scores.mean(axis=0)[index]} \n')
 

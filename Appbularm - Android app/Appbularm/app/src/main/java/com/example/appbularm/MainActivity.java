@@ -66,7 +66,7 @@ class PermissionManager {
             Manifest.permission.ACCESS_FINE_LOCATION
     };
 
-    // Checks if all required permissions are granted
+    // Checks if all required permissions are granted when app started
     static boolean hasPermissions(Context context) {
         for (String permission : REQUIRED_PERMISSIONS) {
             // If any permission is not granted, return false
@@ -83,7 +83,7 @@ class PermissionManager {
         ActivityCompat.requestPermissions(activity, REQUIRED_PERMISSIONS, PERMISSIONS_REQUEST_CODE);
     }
 
-    // Checks if all requested permissions are granted
+    // Checks if all requested permissions are granted after asked user to give permissions
     static boolean allPermissionsGranted(int[] grantResults) {
         for (int grantResult : grantResults) {
             // If any permission is not granted, return false
